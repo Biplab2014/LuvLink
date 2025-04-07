@@ -1,30 +1,28 @@
 package com.luv.link
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.sp
+import com.luv.link.ui.onBoard.OnBoardActivity
+import kotlinx.coroutines.delay
 import com.luv.link.ui.theme.DigiSignTheme
 import com.luv.link.viewModels.UserViewModel
-import com.luv.link.viewModels.mqtt.MqttViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -36,15 +34,13 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             DigiSignTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    MqttScreen(
-                        modifier = Modifier.padding(innerPadding)
-                    )
+                Surface(color = MaterialTheme.colorScheme.background) {
+                    SplashScreen()
                 }
             }
         }
 
-        // use this user model to load data
+        // Use this user model to load data
         userViewModel.user.observe(this) { user ->
             // Log.d("MainActivity", "User: $user")
         }
@@ -54,32 +50,38 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MqttScreen(
-    modifier: Modifier = Modifier,
-    mqttViewModel: MqttViewModel = viewModel()
-) {
-    var inputMessage by remember { mutableStateOf("") }
+fun SplashScreen() {
+    var isSplashVisible by remember { mutableStateOf(true) }
+    val context = LocalContext.current
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+    LaunchedEffect(Unit) {
+        delay(5000) // Show splash for 5 seconds
+        isSplashVisible = false
+        // Navigate to OnBoardActivity
+        // You can use an Intent to start the OnBoardActivity
+        // This part will be handled in the MainActivity
+
+        context.startActivity(Intent(context, OnBoardActivity::class.java))
+    }
+
+    if (isSplashVisible) {
+        SplashContent()
+    }
+}
+
+@Composable
+fun SplashContent() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF007BFF)), // Blue background
+        contentAlignment = Alignment.Center
     ) {
-        OutlinedTextField(
-            value = inputMessage,
-            onValueChange = { inputMessage = it },
-            label = { Text("Enter Message") }
+        Text(
+            text = stringResource(R.string.app_name),
+            color = Color.White,
+            fontSize = 32.sp // Adjust font size as needed
         )
-
-        Button(onClick = {
-            mqttViewModel.publishMessage("topic", inputMessage)
-        }) {
-            Text("Publish")
-        }
-
-        Text(text = "Last Received Message: ")
-        mqttViewModel.mqttMessage.observeForever { message ->
-            // Log.d("MQTT", "Received: $message")
-        }
     }
 }
 
@@ -87,6 +89,6 @@ fun MqttScreen(
 @Composable
 fun PreviewMqttScreen() {
     DigiSignTheme {
-        MqttScreen()
+        SplashContent()
     }
 }

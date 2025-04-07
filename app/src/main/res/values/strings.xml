@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">LuvLink</string>
+    <string name="onboard_title_1">Life is short and the world is wide</string>
+    <string name="onboard_description_1">At Friends tours and travel, we customize reliable and trustworthy educational tours to destinations all over the world.</string>
+
+    <string name="onboard_title_2">It’s a big world out there go explore</string>
+    <string name="onboard_description_2">To get the best of your adventure you just need to leave and go where you like, we are waiting for you.</string>
+
+    <string name="onboard_title_3">People don’t take trips, trips take people</string>
+    <string name="onboard_description_3">To get the best of your adventure you just need to leave and go where you like, we are waiting for you.</string>
+
+    <string name="next">Next</string>
+    <string name="get_started">Get Started</string>
 </resources>
